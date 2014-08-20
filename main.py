@@ -19,22 +19,40 @@ bests = s.get_other_best_friends(friends)
 try:
 	f = open('scores.csv', 'r')
 	# Get headers
-	line = f.readline()
+	content = f.read()
+	line = content.split('\n')[0]
 	f.close()
-	parts = line.split(',')
-	# Get friends and their column index
-	friends = {name: index for index, name in enumerate(parts[1:])}
-	nextIndex = len(parts)
+	friends = line.split(',')
 except:
 	f = open('scores.csv', 'w')
 	f.write('date,\n')
+	content = 'date,\n'
 	f.close()
-	friends = {}
-	nextIndex = 1
+	# Of course, this means you can't have a friend named 'date'.
+	# But I don't, so it's okay.
+	friends = ['date']
 
 scores = {}
 for username, attrs in bests.iteritems():
 	scores[username] = attrs['score']
+	if username not in friends:
+		friends.append(username)
 
-for username, score in scores.iteritems():
-	
+line = str(datetime.datetime.now()) + ','
+for friend in friends[1:]:
+	# Just in case you got unfriended
+	# Probably for being creepy and graphing people's snapchat scores
+	# But whatever
+	line += str(scores[friend]) if friend in scores else ''
+	line += ','
+
+# Replace first line with new friends list
+content = '\n'.join(','.join(friends).extend(content.split('\n')[1:]))
+
+# Add new data
+content += '\n'
+content += line
+
+f = open('scores.csv', 'w')
+f.write(content)
+f.close()
