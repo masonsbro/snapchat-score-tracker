@@ -9,7 +9,7 @@ s.login(sys.argv[1], sys.argv[2])
 # Get list of friends
 friends = s.get_friends()
 
-# Get friends' usernames as a string of a list
+# Get friends' usernames
 friends = [friend['name'] for friend in friends]
 
 # Get best friends of these friends
@@ -25,8 +25,8 @@ try:
 	friends = line.split(',')
 except:
 	f = open('scores.csv', 'w')
-	f.write('date,\n')
-	content = 'date,\n'
+	f.write('date\n')
+	content = 'date\n'
 	f.close()
 	# Of course, this means you can't have a friend named 'date'.
 	# But I don't, so it's okay.
@@ -38,7 +38,7 @@ for username, attrs in bests.iteritems():
 	if username not in friends:
 		friends.append(username)
 
-line = str(datetime.datetime.now()) + ','
+line = datetime.datetime.now().strftime('%c') + ','
 for friend in friends[1:]:
 	# Just in case you got unfriended
 	# Probably for being creepy and graphing people's snapchat scores
@@ -47,7 +47,7 @@ for friend in friends[1:]:
 	line += ','
 
 # Replace first line with new friends list
-content = '\n'.join(','.join(friends).extend(content.split('\n')[1:]))
+content = '\n'.join([','.join(friends)] + (content.split('\n')[1:]))
 
 # Add new data
 content += '\n'
